@@ -10,6 +10,7 @@ type RouteConfig struct {
 	Api                    *gin.Engine
 	Middleware             *middleware.Middleware
 	HealthcheckHandler    handler.HealthcheckHandler
+	PostHandler           handler.PostHandler
 }
 
 func Setup(c *RouteConfig) {
@@ -17,4 +18,5 @@ func Setup(c *RouteConfig) {
 	c.Api.Use(c.Middleware.CorsMiddleware())
 
 	SetupHealthcheckRoute(c.Api, c.HealthcheckHandler)
+	SetupPostRoute(c.Api, c.PostHandler, c.Middleware)
 }

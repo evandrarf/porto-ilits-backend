@@ -42,7 +42,7 @@ func NewValidator() *Validator {
 func (v *Validator) ParseAndValidate(ctx *gin.Context, req interface{}) error {
 	// Parse JSON body
 	if err := ctx.ShouldBindJSON(req); err != nil {
-		return errors.New("invalid request body")
+		return err
 	}
 
 	err := v.validate.Struct(req)

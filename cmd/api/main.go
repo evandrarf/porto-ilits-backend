@@ -12,12 +12,14 @@ func main() {
 	log := config.NewLogger(viperConfig)
 	router:= config.NewApi(viperConfig, log)
 	validator := validate.NewValidator()
+	db := config.NewDatabase(viperConfig, log)
+
 
 	config.Bootstrap(&config.BootstrapConfig{
 		Api:     router,
 		Config:  viperConfig,
 		Log:     log,
-		DB:      nil, // Replace with actual DB instance if needed
+		DB:      db, // Replace with actual DB instance if needed
 		JWT:     nil, // Replace with actual JWT instance if needed
 		Validator: validator,
 	})
