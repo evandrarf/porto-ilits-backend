@@ -12,3 +12,14 @@ ifeq (${OS},Windows)
 else
 	@air -c .air.toml
 endif
+
+help:
+	@echo "Usage: make [target]"
+	@echo ""
+	@echo "Targets:"
+	@echo "  run       Run the application"
+	@echo "  build     Build the application"
+	@echo "  watch     Run the application with hot reload"
+	@echo "  help      Display this help message"
+
+.DEFAULT_GOAL := help
