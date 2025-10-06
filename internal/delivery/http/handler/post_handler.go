@@ -12,6 +12,7 @@ import (
 type (
 	PostHandler interface {
 		Create(ctx *gin.Context) 
+		GetAll(ctx *gin.Context)
 	}
 
 	postHandler struct{
@@ -44,4 +45,14 @@ func (h *postHandler) Create(ctx *gin.Context) {
 	}
 
 	response.NewSuccess(domain.CREATE_POST_SUCCESS, nil, nil).Send(ctx)
+}
+
+func (h *postHandler) GetAll(ctx *gin.Context) {
+	posts, err := h.postUsecase.GetAll(ctx)
+	if err != nil {
+		response.NewFailed(domain.GET_POSTS_FAILED, err, h.logger).Send(ctx)
+		return
+	}
+
+	response.NewSuccess(domain.GET_POSTS_SUCCESS, posts, nil).Send(ctx)
 }

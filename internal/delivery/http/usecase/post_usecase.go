@@ -11,6 +11,7 @@ import (
 type (
 	PostUsecase interface {
 		Create(ctx *gin.Context, req domain.PostCreateRequest) (error)
+		GetAll(ctx *gin.Context) ([]entity.Post, error)
 	}
 
 	postUsecase struct{
@@ -53,4 +54,14 @@ func (u *postUsecase) Create(ctx *gin.Context, req domain.PostCreateRequest) ( e
 	}
 
 	return  nil
+}
+
+func (u *postUsecase) GetAll(ctx *gin.Context) ([]entity.Post, error) {
+	var posts []entity.Post
+	err := u.postRepository.All(u.db, &posts, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return posts, nil
 }

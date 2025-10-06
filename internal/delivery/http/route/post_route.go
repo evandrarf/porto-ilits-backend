@@ -10,5 +10,6 @@ func SetupPostRoute(api *gin.Engine, handler handler.PostHandler, m *middleware.
 	router := api.Group("/posts")
 	{
 		router.POST("", handler.Create)
+		router.GET("", handler.GetAll)
 	}
 }
