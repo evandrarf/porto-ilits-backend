@@ -11,5 +11,7 @@ func SetupPostRoute(api *gin.Engine, handler handler.PostHandler, m *middleware.
 	{
 		router.POST("", handler.Create)
 		router.GET("", handler.GetAll)
+		router.PUT("/:id", handler.Update)
+		router.DELETE("/:id", handler.Delete)
 	}
 }

@@ -12,6 +12,8 @@ type (
 	PostUsecase interface {
 		Create(ctx *gin.Context, req domain.PostCreateRequest) (error)
 		GetAll(ctx *gin.Context) ([]entity.Post, error)
+		Update(ctx *gin.Context, id uint, req domain.PostUpdateRequest) (error)
+		Delete(ctx *gin.Context, id uint) (error)
 	}
 
 	postUsecase struct{
@@ -64,4 +66,74 @@ func (u *postUsecase) GetAll(ctx *gin.Context) ([]entity.Post, error) {
 	}
 
 	return posts, nil
+}
+
+func (u *postUsecase) Update(ctx *gin.Context, id uint, req domain.PostUpdateRequest) ( error) {
+	tx := u.db.WithContext(ctx.Copy().Request.Context()).Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if tx.Error != nil {
+		return  tx.Error
+	}
+
+	exists := u.postRepository.Exists(tx, id)
+	if !exists {
+		tx.Rollback()
+		return domain.ErrPostNotFound
+	}
+
+	data := entity.Post{
+		ID: id,
+		Title: req.Title,
+		Content: req.Content,
+	}
+
+	if err:= u.postRepository.Update(tx, &data); err != nil {
+		tx.Rollback()
+		return  err
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return  err
+	}
+
+	return  nil
+}
+
+func (u *postUsecase) Delete(ctx *gin.Context, id uint) ( error) {
+	tx := u.db.WithContext(ctx.Copy().Request.Context()).Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if tx.Error != nil {
+		return  tx.Error
+	}
+
+	exists := u.postRepository.Exists(tx, id)
+	if !exists {
+		tx.Rollback()
+		return domain.ErrPostNotFound
+	}
+
+	data := entity.Post{
+		ID: id,
+	}
+
+	if err:= u.postRepository.Delete(tx, &data); err != nil {
+		tx.Rollback()
+		return  err
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return  err
+	}
+
+	return  nil
 }
